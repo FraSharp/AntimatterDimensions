@@ -6,10 +6,10 @@ env:
 on:
   push:
     branches:
-      - master
+      - masterold
   workflow_dispatch:
     branches:
-      - master
+      - masterold
 
 jobs:
   build:

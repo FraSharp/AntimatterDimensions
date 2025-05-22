@@ -3,7 +3,7 @@
  */
 
 const DEV = process.env.VUE_APP_DEV === "true";
-const STEAM = process.env.VUE_APP_STEAM === "true";
+const STEAM = process.env.VUE_APP_STEAM === "false";
 
 module.exports = {
   publicPath: "./",
