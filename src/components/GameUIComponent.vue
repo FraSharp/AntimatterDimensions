@@ -143,10 +143,17 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div
     v-if="view.initialized"
     id="ui-container"
     :class="[containerClass, 'safe-area-container']"
     class="ui-wrapper"
+  >
+    <component
+      :is="uiLayout"
+      v-if="view.initialized"
+    />
+    <game-ui-component-fixed />
+    <background-animations v-if="view.hasBackgroundAnimations" />
   </div>
 </template>
