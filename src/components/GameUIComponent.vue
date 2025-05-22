@@ -151,7 +151,6 @@ export default {
   >
     <component
       :is="uiLayout"
-      v-if="view.initialized"
     />
     <game-ui-component-fixed />
     <background-animations v-if="view.hasBackgroundAnimations" />

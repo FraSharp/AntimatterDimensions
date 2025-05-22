@@ -1050,7 +1050,8 @@ export function simulateTime(seconds, real, fast) {
 window.onload = function() {
   const supportedBrowser = browserCheck();
   GameUI.initialized = supportedBrowser;
-  ui.view.initialized = supportedBrowser;
+  // ui.view.initialized = supportedBrowser;
+  ui.view.initialized = true;
   setTimeout(() => {
     ElectronRuntime.updateZoom();
     document.getElementById("loading").style.display = "none";
