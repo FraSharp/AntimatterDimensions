@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy
 on:
   push:
     branches: [master]
@@ -13,9 +13,10 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run build:master
-      - name: Deploy to gh-pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
+          force_orphan: true
