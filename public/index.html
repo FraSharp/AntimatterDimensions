@@ -5,6 +5,16 @@
   <title>Antimatter Dimensions</title>
   <link rel="icon" type="image/png" href="icon.png">
   <meta name="Antimatter Dimensions" content="A game about huge numbers and watching them go up." >
+  <!-- Viewport and iOS PWA Integration -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="apple-touch-startup-image" href="icon.png">
+  <meta name="apple-mobile-web-app-title" content="Antimatter Dimensions">
+  <!-- PWA manifest reference -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
   <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="stylesheets/fontawesome/css/all.css">
   <link rel="stylesheet" type="text/css" href="stylesheets/codemirror/codemirror.css">
@@ -20,8 +30,9 @@
   <link rel="stylesheet" type="text/css" href="stylesheets/time-studies.css">
   <link rel="stylesheet" type="text/css" href="stylesheets/tooltips.css">
   <link rel="stylesheet" type="text/css" href="stylesheets/vis-network.css">
+  <!-- Mobile-specific stylesheet -->
+  <link rel="stylesheet" type="text/css" href="stylesheets/mobile.css">
 </head>
-
 <body>
   <div id="browser-warning">
     Your browser is not supported.
@@ -29,7 +40,7 @@
     Please update to a newer browser.
   </div>
   <div id="loading"></div>
-  <div id="ui"></div>
+  <div id="ui" class="safe-area-container"></div>
   <div id="background-animations">
     <div class="videocontainer videocontainer--background">
       <video autoplay muted loop id="stars">
@@ -56,3 +67,4 @@
   }
 </script>
 </html>
+

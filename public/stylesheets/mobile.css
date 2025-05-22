@@ -1,0 +1,56 @@
+/* Mobile-specific CSS enhancements for Antimatter Dimensions */
+
+.ios-button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: opacity 0.15s ease;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.ios-button:active {
+  opacity: 0.7;
+}
+
+/* Add to parent containers that need iOS-safe area insets */
+.safe-area-container {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* For scrollable containers */
+.ios-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Add momentum scrolling to containers */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
+
+/* Media queries for iOS devices */
+@media (max-width: 768px) {
+  /* Optimize for smaller screens */
+  button, .button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Fix for notch and dynamic island on newer iOS devices */
+@supports(padding: max(0px)) {
+  .safe-area-container {
+    padding-left: max(env(safe-area-inset-left), 8px);
+    padding-right: max(env(safe-area-inset-right), 8px);
+    padding-top: max(env(safe-area-inset-top), 8px);
+    padding-bottom: max(env(safe-area-inset-bottom), 8px);
+  }
+}

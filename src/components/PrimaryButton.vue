@@ -12,6 +12,8 @@ export default {
     classObject() {
       return {
         "o-primary-btn--disabled": !this.enabled,
+        "ios-button": true,
+        "no-select": true
       };
     }
   }
@@ -22,6 +24,8 @@ export default {
   <button
     class="o-primary-btn"
     :class="classObject"
+    @touchstart.passive="$listeners.click"
+    @contextmenu.prevent
     v-on="$listeners"
   >
     <slot />

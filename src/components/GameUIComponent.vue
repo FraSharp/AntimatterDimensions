@@ -4,6 +4,7 @@ import ClassicUi from "@/components/ui-modes/classic/ClassicUi";
 import GameUiComponentFixed from "@/components/GameUiComponentFixed";
 import ModernUi from "@/components/ui-modes/modern/ModernUi";
 import TabComponents from "@/components/tabs";
+import { createSwipeHandler } from "@/utility/swipe-navigation";
 
 import S12DesktopIcons from "@/components/ui-modes/s12/DesktopIcons";
 import S12Ui from "@/components/ui-modes/s12/S12Ui";
@@ -42,6 +43,39 @@ export default {
     themeCss() {
       return `stylesheets/theme-${this.view.theme}.css`;
     }
+  },
+  methods: {
+    nextTab() {
+      const currentTabIndex = Tabs.allTabs.indexOf(Tabs.current.tab);
+      const nextTabIndex = (currentTabIndex + 1) % Tabs.allTabs.length;
+      // Move to next available tab
+      Tabs.all[Tabs.allTabs[nextTabIndex]].show();
+    },
+    prevTab() {
+      const currentTabIndex = Tabs.allTabs.indexOf(Tabs.current.tab);
+      const prevTabIndex = (currentTabIndex - 1 + Tabs.allTabs.length) % Tabs.allTabs.length;
+      // Move to previous available tab
+      Tabs.all[Tabs.allTabs[prevTabIndex]].show();
+    }
+  },
+  mounted() {
+    // Create and attach swipe handler for tab navigation but wait for DOM to be ready
+    this.$nextTick(() => {
+      this.swipeHandler = createSwipeHandler(
+        () => this.nextTab(),
+        () => this.prevTab(),
+        50 // 50px threshold to trigger swipe
+      );
+
+      const uiElement = document.getElementById('ui');
+      if (uiElement) {
+        this.removeSwipeListeners = this.swipeHandler.attachTo(uiElement);
+      }
+    });
+  },
+  beforeDestroy() {
+    // Clean up event listeners
+    if (this.removeSwipeListeners) this.removeSwipeListeners();
   }
 };
 </script>
@@ -50,12 +84,12 @@ export default {
   <div
     v-if="view.initialized"
     id="ui-container"
-    :class="containerClass"
+    :class="[containerClass, 'safe-area-container']"
     class="ui-wrapper"
   >
     <div
       id="ui"
-      class="c-game-ui"
+      class="c-game-ui ios-scroll"
     >
       <component :is="uiLayout">
         <component
@@ -71,16 +105,8 @@ export default {
         :href="themeCss"
       >
     </div>
-    <GameUiComponentFixed v-if="!isThemeS12" />
-    <BackgroundAnimations v-if="!isThemeS12" />
+    <GameUiComponentFixed />
     <S12UiFixed v-if="isThemeS12" />
   </div>
 </template>
 
-<style scoped>
-.ui-wrapper {
-  display: flex;
-  position: relative;
-  justify-content: center;
-}
-</style>

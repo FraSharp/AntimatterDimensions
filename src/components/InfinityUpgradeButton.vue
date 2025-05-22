@@ -2,6 +2,7 @@
 import CostDisplay from "@/components/CostDisplay";
 import DescriptionDisplay from "@/components/DescriptionDisplay";
 import EffectDisplay from "@/components/EffectDisplay";
+import { debounce } from "../utility/touch";
 
 export default {
   name: "InfinityUpgradeButton",
@@ -59,7 +60,9 @@ export default {
         "o-infinity-upgrade-btn--chargeable": !this.isCharged && this.chargePossible &&
           (this.showingCharged || this.shiftDown),
         "o-infinity-upgrade-btn--charged": this.isCharged,
-        "o-pelle-disabled-pointer": this.isUseless
+        "o-pelle-disabled-pointer": this.isUseless,
+        "ios-button": true,
+        "no-select": true
       };
     },
     isImprovedByTS31() {
@@ -97,6 +100,10 @@ export default {
       const worstChallengeIndex = 2 + player.challenge.normal.bestTimes.indexOf(worstChallengeTime);
       this.worstChallengeString = `(Challenge ${worstChallengeIndex}: ${timeDisplayShort(worstChallengeTime)})`;
     }
+  },
+  created() {
+    // Create debounced version of purchase function for touch events
+    this.debouncedPurchase = debounce(() => this.upgrade.purchase(), 200);
   }
 };
 </script>
@@ -106,7 +113,9 @@ export default {
     :class="classObject"
     @mouseenter="showingCharged = canBeCharged"
     @mouseleave="showingCharged = false"
-    @click="upgrade.purchase()"
+    @click.prevent="upgrade.purchase()"
+    @touchstart.passive="debouncedPurchase"
+    @contextmenu.prevent
   >
     <span :class="{ 'o-pelle-disabled': isUseless }">
       <DescriptionDisplay

@@ -1,4 +1,6 @@
 <script>
+import { debounce } from "../utility/touch";
+
 export default {
   name: "ButtonCycle",
   props: {
@@ -24,6 +26,10 @@ export default {
     handleClick() {
       this.emitInput((this.value + 1) % this.labels.length);
     }
+  },
+  created() {
+    // Create debounced version of handleClick for touch events
+    this.debouncedHandleClick = debounce(this.handleClick, 200);
   }
 };
 </script>
@@ -31,7 +37,10 @@ export default {
 <template>
   <button
     v-bind="$attrs"
-    @click="handleClick"
+    class="ios-button no-select"
+    @click.prevent="handleClick"
+    @touchstart.passive="debouncedHandleClick"
+    @contextmenu.prevent
   >
     {{ displayText }}
   </button>
