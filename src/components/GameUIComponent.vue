@@ -143,8 +143,10 @@ export default {
 </script>
 
 <template>
-  <div
+  <div>
     v-if="view.initialized"
     id="ui-container"
     :class="[containerClass, 'safe-area-container']"
-    class="ui-wrapper
+    class="ui-wrapper"
+  </div>
+</template>
