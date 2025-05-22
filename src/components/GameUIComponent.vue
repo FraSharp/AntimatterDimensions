@@ -149,10 +149,25 @@ export default {
     :class="[containerClass, 'safe-area-container']"
     class="ui-wrapper"
   >
-    <component
-      :is="uiLayout"
-    />
-    <game-ui-component-fixed />
-    <background-animations v-if="view.hasBackgroundAnimations" />
+    <div
+      id="ui"
+      class="c-game-ui ios-scroll"
+    >
+      <component :is="uiLayout">
+        <component
+          :is="page"
+          class="c-game-tab"
+        />
+      </component>
+      <S12DesktopIcons v-if="isThemeS12" />
+      <link
+        v-if="view.theme !== 'Normal'"
+        type="text/css"
+        rel="stylesheet"
+        :href="themeCss"
+      >
+    </div>
+    <GameUiComponentFixed />
+    <S12UiFixed v-if="isThemeS12" />
   </div>
 </template>
