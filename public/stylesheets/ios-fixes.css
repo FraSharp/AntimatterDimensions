@@ -1,0 +1,302 @@
+/* iOS-specific fixes for Antimatter Dimensions
+   This file contains targeted fixes for iPhone display issues */
+
+/* Fix for viewport height on iOS */
+:root {
+  --vh: 1vh;
+}
+
+/* Global scale-down for all mobile UI elements */
+.ios-ui {
+  height: calc(var(--vh, 1vh) * 100);
+  transform: scale(0.92); /* Apply global scaling to all content */
+  transform-origin: top center;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Fix overlapping elements on iOS */
+.ios-ui .c-container {
+  overflow: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  padding: 4px !important; /* Reduce padding */
+  margin: 2px !important; /* Reduce margins */
+  box-sizing: border-box !important;
+}
+
+/* Reduce dimensions of all UI panels */
+.ios-ui .c-panel {
+  padding: 5px !important;
+  margin: 3px !important;
+  max-width: 100% !important;
+}
+
+/* Improve scrolling behavior */
+.ios-ui .scrollable-container {
+  height: auto !important;
+  max-height: 75vh !important; /* Reduce max height */
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Make buttons more compact */
+.ios-ui button,
+.ios-ui .button,
+.ios-ui .c-button {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 1;
+  padding: 5px !important; /* Smaller padding */
+  margin: 2px !important; /* Smaller margins */
+  min-height: 38px !important; /* Reduced but still touch-friendly */
+  min-width: 38px !important;
+  font-size: 0.9em !important; /* Smaller font */
+}
+
+/* Fix text inputs */
+.ios-ui input[type="text"],
+.ios-ui input[type="number"] {
+  font-size: 16px; /* Prevent zoom on focus */
+  max-width: 100%;
+  padding: 4px !important;
+}
+
+/* Fix modal positioning */
+.ios-ui .c-modal,
+.ios-ui .modal {
+  position: fixed !important;
+  max-width: 92vw !important;
+  max-height: 85vh !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) scale(0.95) !important; /* Scale down modals slightly */
+  overflow-y: auto !important;
+  padding: 6px !important;
+}
+
+/* Fix game grid layouts - make them more compact */
+.ios-ui .l-game-container {
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow: hidden;
+  padding: 2px !important;
+}
+
+/* Fix tab navigation */
+.ios-ui .c-tab-container {
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 1px 0 !important;
+}
+
+.ios-ui .c-tab {
+  display: inline-block !important;
+  padding: 6px 10px !important; /* Smaller tab padding */
+  font-size: 0.9em !important;
+}
+
+/* Fix content scaling */
+.ios-ui .c-content {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 5px !important;
+}
+
+/* Specific grid fixes with smaller cells for gameplay elements */
+.ios-ui .l-achievement-grid,
+.ios-ui .l-upgrade-grid,
+.ios-ui .l-dimensions-grid,
+.ios-ui .l-challenge-grid {
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important; /* Much smaller grid cells */
+  gap: 4px !important; /* Smaller gaps */
+  width: 100% !important;
+  overflow: hidden !important;
+  padding: 2px !important;
+}
+
+/* Fix small UI elements to be more compact */
+.ios-ui .l-automator-grid,
+.ios-ui .l-shop-grid {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+  gap: 4px !important;
+}
+
+/* Fix for number displays */
+.ios-ui .c-big-number {
+  word-break: break-word !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  font-size: 0.9em !important;
+}
+
+/* Make headings smaller */
+.ios-ui h1,
+.ios-ui .c-h1 {
+  font-size: 1.4em !important;
+}
+
+.ios-ui h2,
+.ios-ui .c-h2 {
+  font-size: 1.2em !important;
+}
+
+.ios-ui h3,
+.ios-ui .c-h3 {
+  font-size: 1.1em !important;
+}
+
+/* Make all text elements slightly smaller */
+.ios-ui p,
+.ios-ui span,
+.ios-ui div {
+  font-size: 0.95em;
+}
+
+/* Make sure tables fit */
+.ios-ui table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  font-size: 0.9em !important;
+}
+
+.ios-ui td,
+.ios-ui th {
+  padding: 3px 4px !important;
+}
+
+/* Fix for landscape mode on iPhone */
+@media screen and (orientation: landscape) {
+  .ios-ui {
+    transform: scale(0.88); /* Even smaller scale in landscape */
+  }
+
+  .ios-ui .c-game-header {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 2px !important;
+  }
+
+  .ios-ui .c-tab-content {
+    max-height: 68vh !important;
+  }
+
+  /* More compact grid in landscape */
+  .ios-ui .l-achievement-grid,
+  .ios-ui .l-upgrade-grid,
+  .ios-ui .l-dimensions-grid,
+  .ios-ui .l-challenge-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+  }
+}
+
+/* iPhone-specific adjustments - more aggressive */
+@media screen and (max-width: 430px) {
+  .ios-ui {
+    transform: scale(0.9); /* Additional scaling for narrow screens */
+  }
+
+  /* Further compact elements on iPhone */
+  .ios-ui button,
+  .ios-ui .button {
+    padding: 4px !important;
+    margin: 2px !important;
+    min-height: 36px !important;
+    font-size: 0.85em !important;
+  }
+
+  /* Even smaller grid cells */
+  .ios-ui .l-achievement-grid,
+  .ios-ui .l-upgrade-grid,
+  .ios-ui .l-challenge-grid,
+  .ios-ui .l-dimensions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
+    gap: 3px !important;
+  }
+
+  /* Tighten up containers */
+  .ios-ui .c-container {
+    padding: 3px !important;
+    margin: 1px !important;
+  }
+
+  /* Further reduce tab sizes */
+  .ios-ui .c-tab {
+    padding: 5px 8px !important;
+  }
+}
+
+/* Small iPhone SE size adjustments */
+@media screen and (max-width: 375px) {
+  .ios-ui {
+    transform: scale(0.85); /* More aggressive scaling for very small screens */
+  }
+
+  .ios-ui .c-panel {
+    padding: 3px !important;
+    margin: 2px !important;
+  }
+
+  /* Even smaller grids */
+  .ios-ui .l-achievement-grid,
+  .ios-ui .l-upgrade-grid,
+  .ios-ui .l-challenge-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+    gap: 2px !important;
+  }
+}
+
+/* Fix for bottom tab navigation on iPhone */
+.ios-ui .bottom-nav-container {
+  padding-bottom: max(env(safe-area-inset-bottom), 5px) !important;
+}
+
+/* Fix for notches and dynamic island */
+.ios-ui.safe-area-container {
+  padding-top: max(env(safe-area-inset-top), 3px) !important;
+  padding-bottom: max(env(safe-area-inset-bottom), 3px) !important;
+  padding-left: max(env(safe-area-inset-left), 3px) !important;
+  padding-right: max(env(safe-area-inset-right), 3px) !important;
+}
+
+/* Fix main game containers */
+.ios-ui #game {
+  width: 100% !important;
+  max-width: 100vw !important;
+  height: auto !important;
+  overflow: hidden !important;
+  transform-origin: top center;
+}
+
+/* Fix for dimension boosts and other game-specific elements */
+.ios-ui .o-dimension-row {
+  margin: 3px 0 !important;
+  padding: 2px !important;
+}
+
+/* Target core game UI containers to make them more compact */
+.ios-ui .c-antimatter-dimensions-container,
+.ios-ui .c-infinity-dimensions-container,
+.ios-ui .c-time-dimensions-container,
+.ios-ui .c-eternity-dimensions-container {
+  padding: 3px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Make icon buttons smaller */
+.ios-ui .o-primary-btn__icon,
+.ios-ui .o-secondary-btn__icon {
+  font-size: 0.85em !important;
+}
+
+/* Reduce padding in main tab contents */
+.ios-ui .o-tab-content {
+  padding: 3px !important;
+}

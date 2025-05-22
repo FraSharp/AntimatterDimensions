@@ -33,9 +33,10 @@ export default {
       return this.view.newUI ? "ModernUi" : "ClassicUi";
     },
     containerClass() {
-      // Add mobile detection class
+      // Add mobile detection class with improved iOS-specific detection
       const isMobile = /iPhone|iPad|iPod|Android/iu.test(navigator.userAgent);
-      return `${this.view.newUI ? "new-ui" : "old-ui"}${isMobile ? " mobile-ui" : ""}`;
+      const isIOS = /iPhone|iPad|iPod/iu.test(navigator.userAgent);
+      return `${this.view.newUI ? "new-ui" : "old-ui"}${isMobile ? " mobile-ui" : ""}${isIOS ? " ios-ui" : ""}`;
     },
     page() {
       const subtab = Tabs.current[this.$viewModel.subtab];
@@ -64,17 +65,28 @@ export default {
       this.swipeHandler = swipeHandler;
 
       document.addEventListener("touchstart", swipeHandler.handleTouchStart, { passive: true });
-      document.addEventListener("touchmove", swipeHandler.handleTouchMove, { passive: true });
-      document.addEventListener("touchend", swipeHandler.handleTouchEnd, { passive: true });
+      document.addEventListener("touchmove", swipeHandler.handleTouchMove, { passive: false });
+      document.addEventListener("touchend", swipeHandler.handleTouchEnd, { passive: false });
 
       // Add iOS safe area class to main container
       if (this.isIOS) {
         document.getElementById("ui").classList.add("safe-area-container");
+        document.getElementById("ui").classList.add("ios-ui");
+
+        // Apply specific iOS fixes
+        this.applyIOSSpecificFixes();
       }
 
-      // Prevent double-tap zoom
+      // Prevent double-tap zoom on iOS
       document.addEventListener("touchend", e => {
         if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // Prevent pull-to-refresh on mobile browsers
+      document.body.addEventListener("touchmove", e => {
+        if (e.touches.length > 1) {
           e.preventDefault();
         }
       }, { passive: false });
@@ -100,6 +112,31 @@ export default {
       const prevTabIndex = (currentTabIndex - 1 + Tabs.allTabs.length) % Tabs.allTabs.length;
       // Move to previous available tab
       Tabs.all[Tabs.allTabs[prevTabIndex]].show();
+    },
+    // Add method to apply iPhone-specific fixes
+    applyIOSSpecificFixes() {
+      // Add scrollable-container class to common scrollable elements
+      document.querySelectorAll(".c-tab-content, .c-modal-content").forEach(el => {
+        el.classList.add("scrollable-container");
+        el.classList.add("ios-scroll");
+      });
+
+      // Add touch-friendly classes to all buttons
+      document.querySelectorAll("button, .button").forEach(btn => {
+        btn.classList.add("ios-button");
+        btn.classList.add("no-select");
+      });
+
+      // Fix viewport height issues on iOS
+      const setIOSViewportHeight = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
+
+      // Set viewport height and update on resize/orientation change
+      setIOSViewportHeight();
+      window.addEventListener("resize", setIOSViewportHeight);
+      window.addEventListener("orientationchange", setIOSViewportHeight);
     }
   }
 };
@@ -110,9 +147,4 @@ export default {
     v-if="view.initialized"
     id="ui-container"
     :class="[containerClass, 'safe-area-container']"
-    class="ui-wrapper"
-  >
-    <!-- Dynamic component based on UI layout -->
-    <component :is="uiLayout"></component>
-  </div>
-</template>
+    class="ui-wrapper
