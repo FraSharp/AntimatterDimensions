@@ -3,12 +3,11 @@ import BackgroundAnimations from "@/components/BackgroundAnimations";
 import ClassicUi from "@/components/ui-modes/classic/ClassicUi";
 import GameUiComponentFixed from "@/components/GameUiComponentFixed";
 import ModernUi from "@/components/ui-modes/modern/ModernUi";
-import TabComponents from "@/components/tabs";
-import { createSwipeHandler } from "@/utility/swipe-navigation";
-
 import S12DesktopIcons from "@/components/ui-modes/s12/DesktopIcons";
 import S12Ui from "@/components/ui-modes/s12/S12Ui";
 import S12UiFixed from "@/components/ui-modes/s12/S12UiFixed";
+import TabComponents from "@/components/tabs";
+import { createSwipeHandler } from "@/utility/swipe-navigation";
 
 export default {
   name: "GameUIComponent",
@@ -34,7 +33,9 @@ export default {
       return this.view.newUI ? "ModernUi" : "ClassicUi";
     },
     containerClass() {
-      return this.view.newUI ? "new-ui" : "old-ui";
+      // Add mobile detection class
+      const isMobile = /iPhone|iPad|iPod|Android/iu.test(navigator.userAgent);
+      return `${this.view.newUI ? "new-ui" : "old-ui"}${isMobile ? " mobile-ui" : ""}`;
     },
     page() {
       const subtab = Tabs.current[this.$viewModel.subtab];
@@ -42,6 +43,49 @@ export default {
     },
     themeCss() {
       return `stylesheets/theme-${this.view.theme}.css`;
+    },
+    // Add computed property to check if device is iOS
+    isIOS() {
+      return /iPhone|iPad|iPod/iu.test(navigator.userAgent);
+    }
+  },
+  // Lifecycle hooks should come before methods according to ESLint vue/order-in-components
+  mounted() {
+    // Setup swipe handling for mobile devices
+    if (/iPhone|iPad|iPod|Android/iu.test(navigator.userAgent)) {
+      const swipeHandler = createSwipeHandler({
+        onSwipeLeft: this.nextTab,
+        onSwipeRight: this.prevTab,
+        minSwipeDistance: 50,
+        preventDefaultOnSwipe: true
+      });
+
+      // Store swipeHandler reference for cleanup
+      this.swipeHandler = swipeHandler;
+
+      document.addEventListener("touchstart", swipeHandler.handleTouchStart, { passive: true });
+      document.addEventListener("touchmove", swipeHandler.handleTouchMove, { passive: true });
+      document.addEventListener("touchend", swipeHandler.handleTouchEnd, { passive: true });
+
+      // Add iOS safe area class to main container
+      if (this.isIOS) {
+        document.getElementById("ui").classList.add("safe-area-container");
+      }
+
+      // Prevent double-tap zoom
+      document.addEventListener("touchend", e => {
+        if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    }
+  },
+  beforeDestroy() {
+    // Clean up event listeners if component is destroyed
+    if (/iPhone|iPad|iPod|Android/iu.test(navigator.userAgent) && this.swipeHandler) {
+      document.removeEventListener("touchstart", this.swipeHandler.handleTouchStart);
+      document.removeEventListener("touchmove", this.swipeHandler.handleTouchMove);
+      document.removeEventListener("touchend", this.swipeHandler.handleTouchEnd);
     }
   },
   methods: {
@@ -57,25 +101,6 @@ export default {
       // Move to previous available tab
       Tabs.all[Tabs.allTabs[prevTabIndex]].show();
     }
-  },
-  mounted() {
-    // Create and attach swipe handler for tab navigation but wait for DOM to be ready
-    this.$nextTick(() => {
-      this.swipeHandler = createSwipeHandler(
-        () => this.nextTab(),
-        () => this.prevTab(),
-        50 // 50px threshold to trigger swipe
-      );
-
-      const uiElement = document.getElementById('ui');
-      if (uiElement) {
-        this.removeSwipeListeners = this.swipeHandler.attachTo(uiElement);
-      }
-    });
-  },
-  beforeDestroy() {
-    // Clean up event listeners
-    if (this.removeSwipeListeners) this.removeSwipeListeners();
   }
 };
 </script>
@@ -87,26 +112,7 @@ export default {
     :class="[containerClass, 'safe-area-container']"
     class="ui-wrapper"
   >
-    <div
-      id="ui"
-      class="c-game-ui ios-scroll"
-    >
-      <component :is="uiLayout">
-        <component
-          :is="page"
-          class="c-game-tab"
-        />
-      </component>
-      <S12DesktopIcons v-if="isThemeS12" />
-      <link
-        v-if="view.theme !== 'Normal'"
-        type="text/css"
-        rel="stylesheet"
-        :href="themeCss"
-      >
-    </div>
-    <GameUiComponentFixed />
-    <S12UiFixed v-if="isThemeS12" />
+    <!-- Dynamic component based on UI layout -->
+    <component :is="uiLayout"></component>
   </div>
 </template>
-
