@@ -35,26 +35,33 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden; /* Prevent horizontal overflow */
   position: relative;
   background-color: #000;
-  -webkit-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; /* Prevent text size adjustment */
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
 
+*, *::before, *::after { /* Apply box-sizing to all elements */
+  box-sizing: inherit;
+}
+
 body {
-  height: 100dvh;
+  height: 100dvh; /* Use dynamic viewport height */
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
 
 #ui-container.ui-wrapper {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100%;
+  width: 100%; /* Use 100% instead of 100vw to avoid issues with scrollbars */
+  min-height: 100%; /* Ensure it takes at least full viewport height */
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */ /* Allow content to scroll if needed */
 }
 
 #ui.c-game-ui {
@@ -62,21 +69,74 @@ body {
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  display: flex; /* Use flexbox for internal layout */
+  flex-direction: column; /* Stack children vertically */
 }
 
 .c-game-tab {
   width: 100%;
-  height: 100%;
+  height: auto; /* Allow height to adjust to content */
+  min-height: 0; /* Allow shrinking in flex container */
   box-sizing: border-box;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 1rem;
+  flex-grow: 1; /* Allow tab content to take available space */
 }
 
 @media (max-width: 600px) {
   .dimension-button, .btn, button {
     min-width: 44px;
     min-height: 44px;
-    font-size: 1.1em;
+    font-size: clamp(0.8rem, 3.5vw, 1.1em); /* Responsive font size */
+    padding: 0.5em 0.2em; /* Adjust padding */
+    word-break: break-word; /* Prevent text overflow */
+    white-space: normal; /* Allow text to wrap */
   }
+
+  /* Reduce text size for dimension descriptions if needed */
+  .c-antimatter-dim-row__label {
+    font-size: clamp(0.7rem, 3vw, 1em);
+  }
+}
+
+/* Ensure header elements are responsive */
+.game-header, .c-prestige-info-blocks {
+  width: 100%;
+  flex-wrap: wrap; /* Allow header items to wrap */
+}
+
+.c-antimatter-dim-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* Allow items to wrap on small screens */
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.c-antimatter-dim-row__label {
+  flex-grow: 1;
+  margin-right: 0.5rem;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.c-antimatter-dim-row .antimatter-dimensions-internal-text {
+    font-size: clamp(0.7rem, 2.5vw, 0.9em); /* Adjust font size of internal text */
+    word-break: break-all; /* Force break to prevent overflow */
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.c-antimatter-dim-row .o-primary-btn--dimension {
+  flex-shrink: 0; /* Prevent button from shrinking too much */
+  max-width: 45%; /* Ensure button doesn't take full width when wrapped */
+}
+
+/* General text readability */
+body, p, span, div {
+  word-break: break-word; /* More aggressive word breaking */
+  overflow-wrap: break-word;
+  hyphens: auto; /* Enable hyphenation */
 }
