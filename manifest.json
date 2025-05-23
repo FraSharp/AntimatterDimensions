@@ -1,0 +1,19 @@
+{
+  "name": "Antimatter Dimensions",
+  "short_name": "AD",
+  "description": "A game about huge numbers and watching them go up",
+  "start_url": "/AntimatterDimensions/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
